@@ -10,6 +10,7 @@ use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Jtl\Connector\Dbc\CoordinatesStub;
 use Jtl\Connector\Dbc\DbcRuntimeException;
 use Jtl\Connector\Dbc\TableStub;
@@ -106,9 +107,9 @@ class TableTest extends TestCase
         $this->assertArrayHasKey(CoordinatesStub::COL_X, $columns);
         $this->assertArrayHasKey(CoordinatesStub::COL_Y, $columns);
         $this->assertArrayHasKey(CoordinatesStub::COL_Z, $columns);
-        $this->assertEquals(Type::FLOAT, $columns[CoordinatesStub::COL_X]);
-        $this->assertEquals(Type::FLOAT, $columns[CoordinatesStub::COL_Y]);
-        $this->assertEquals(Type::FLOAT, $columns[CoordinatesStub::COL_Y]);
+        $this->assertEquals(Types::FLOAT, $columns[CoordinatesStub::COL_X]);
+        $this->assertEquals(Types::FLOAT, $columns[CoordinatesStub::COL_Y]);
+        $this->assertEquals(Types::FLOAT, $columns[CoordinatesStub::COL_Y]);
     }
 
     /**

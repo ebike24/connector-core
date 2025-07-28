@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jtl\Connector\MappingTables;
 
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Result;
 use Jtl\Connector\Dbc\DbcRuntimeException;
 
 class Validator

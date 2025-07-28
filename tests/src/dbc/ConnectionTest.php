@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jtl\Connector\Dbc;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\SchemaException;
@@ -395,8 +395,9 @@ class ConnectionTest extends TestCase
         parent::setUp();
         $this->insertFixtures($this->table, self::getTableStubFixtures());
         $params = [
-            'pdo'          => $this->getPDO(),
-            'wrapperClass' => Connection::class
+            'pdo'           => $this->getPDO(),
+            'driver'        => $this->getDriver(),
+            'wrapperClass'  => Connection::class
         ];
         $config = null;
         /** @var Connection $connection */

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Jtl\Connector\Dbc;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 
 class TableStub extends AbstractTable
 {
@@ -56,8 +56,8 @@ class TableStub extends AbstractTable
         }
 
         $stmt = $this->createQueryBuilder()->select($columns)
-                     ->from($this->getTableName())
-                     ->execute();
+                    ->from($this->getTableName())
+                    ->executeQuery();
 
         if ($stmt instanceof Result === false) {
             throw new \RuntimeException('$stmt must be instance of ' . Result::class);
@@ -114,10 +114,10 @@ class TableStub extends AbstractTable
      */
     protected function createTableSchema(Table $tableSchema): void
     {
-        $tableSchema->addColumn(self::ID, Type::INTEGER, ['autoincrement' => true]);
-        $tableSchema->addColumn(self::A, Type::INTEGER, ['notnull' => false]);
-        $tableSchema->addColumn(self::B, Type::STRING, ['length' => 64]);
-        $tableSchema->addColumn(self::C, Type::DATETIME_IMMUTABLE);
+        $tableSchema->addColumn(self::ID, Types::INTEGER, ['autoincrement' => true]);
+        $tableSchema->addColumn(self::A, Types::INTEGER, ['notnull' => false]);
+        $tableSchema->addColumn(self::B, Types::STRING, ['length' => 64]);
+        $tableSchema->addColumn(self::C, Types::DATETIME_IMMUTABLE);
         $tableSchema->setPrimaryKey([self::ID]);
     }
 }

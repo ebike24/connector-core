@@ -70,7 +70,15 @@ abstract class TestCase extends JtlTestCase
     {
         if (!isset($this->dbManager)) {
             /** @var DbManagerStub $dbManagerStub */
-            $dbManagerStub   = DbManagerStub::createFromParams(['pdo' => $this->getPDO()], null, self::TABLE_PREFIX);
+            $dbManagerStub   = DbManagerStub::createFromParams(
+                [
+                    'pdo' => $this->getPDO(),
+                    'driver' => $this->getDriver(),
+                    'path' => self::SCHEMA
+                ],
+                null,
+                self::TABLE_PREFIX
+            );
             $this->dbManager = $dbManagerStub;
         }
 
@@ -96,10 +104,16 @@ abstract class TestCase extends JtlTestCase
             if (\file_exists(self::SCHEMA)) {
                 \unlink(self::SCHEMA);
             }
+
             $this->pdo = new PDO('sqlite:' . self::SCHEMA);
         }
 
         return $this->pdo;
+    }
+
+    protected function getDriver(): string
+    {
+        return 'pdo_sqlite';
     }
 
     /**

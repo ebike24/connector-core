@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Jtl\Connector\Dbc\Session;
 
-use Doctrine\DBAL\Driver\DriverException;
+use Doctrine\DBAL\Driver\Exception as DriverException;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Query;
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Exception;
 use Jtl\Connector\Dbc\Connection;
 use Jtl\Connector\Dbc\DbcRuntimeException;
@@ -209,8 +211,8 @@ class SessionHandlerTest extends TestCase
             ->method('insert')
             ->willThrowException(
                 new UniqueConstraintViolationException(
-                    'Duplicate Key entry',
-                    $this->createMock(DriverException::class)
+                    $this->createMock(DriverException::class),
+                    null
                 )
             );
 
@@ -457,16 +459,16 @@ class SessionHandlerTest extends TestCase
             ->from($this->handler->getTableName())
             ->where(\sprintf('%s = :sessionId', SessionHandler::SESSION_ID))
             ->setParameter('sessionId', $sessionId)
-            ->execute();
+            ->executeQuery();
 
         if ($stmt instanceof Result === false) {
             throw new \RuntimeException('$stmt must be instance of ' . Result::class);
         }
 
         /** @var \DateTimeImmutable $expiresAt */
-        $expiresAt = Type::getType(Type::DATETIME_IMMUTABLE)
+        $expiresAt = Type::getType(Types::DATETIME_IMMUTABLE)
                          ->convertToPHPValue(
-                             $stmt->fetchColumn(),
+                             $stmt->fetchFirstColumn(),
                              $this->getDBManager()->getConnection()->getDatabasePlatform()
                          );
 
