@@ -62,9 +62,8 @@ abstract class TestCase extends JtlTestCase
 
     /**
      * @return DbManager
-     * @throws DBALException
      * @throws PDOException
-     * @throws RuntimeException|\Doctrine\DBAL\DBALException
+     * @throws RuntimeException
      */
     protected function getDBManager(): DbManager
     {

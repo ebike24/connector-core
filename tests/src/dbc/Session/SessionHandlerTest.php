@@ -468,7 +468,7 @@ class SessionHandlerTest extends TestCase
         /** @var \DateTimeImmutable $expiresAt */
         $expiresAt = Type::getType(Types::DATETIME_IMMUTABLE)
                          ->convertToPHPValue(
-                             $stmt->fetchFirstColumn(),
+                             $stmt->fetchFirstColumn()[0],
                              $this->getDBManager()->getConnection()->getDatabasePlatform()
                          );
 
