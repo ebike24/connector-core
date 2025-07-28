@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Jtl\Connector\Dbc\Mapping;
 
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
-use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Schema\SchemaException;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Jtl\Connector\Dbc\CoordinatesStub;
 use Jtl\Connector\Dbc\DbcRuntimeException;
@@ -270,7 +267,7 @@ class TableTest extends TestCase
     {
         $a = \mt_rand();
         $b = 'foobar';
-        $c = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
+        $c = $this->getRandomDateTimeImmutable();
         $this->assertInstanceOf(TableStub::class, $this->table);
         $this->table->insert(['a' => $a, 'b' => $b, 'c' => $c]);
         $rows = $this->table->find(['a' => $a, 'b' => $b]);
@@ -292,7 +289,7 @@ class TableTest extends TestCase
     {
         $a = \mt_rand();
         $b = 'foobar';
-        $c = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
+        $c = $this->getRandomDateTimeImmutable();
         $this->assertInstanceOf(TableStub::class, $this->table);
         $this->table->insert(['a' => $a, 'b' => $b, 'c' => $c->format('Y-m-d H:i:s')], []);
         $rows = $this->table->find(['a' => $a, 'b' => $b]);
@@ -314,8 +311,8 @@ class TableTest extends TestCase
     {
         $a    = \mt_rand();
         $b    = 'foobar';
-        $c    = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
-        $newC = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
+        $c    = $this->getRandomDateTimeImmutable();
+        $newC = $this->getRandomDateTimeImmutable();
         $this->assertInstanceOf(TableStub::class, $this->table);
         $this->table->insert(['a' => $a, 'b' => $b, 'c' => $c]);
         $this->table->update(['c' => $newC], ['a' => $a, 'b' => $b]);
@@ -333,8 +330,8 @@ class TableTest extends TestCase
     {
         $a    = \mt_rand();
         $b    = 'foobar';
-        $c    = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
-        $newC = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
+        $c    = $this->getRandomDateTimeImmutable();
+        $newC = $this->getRandomDateTimeImmutable();
         $this->assertInstanceOf(TableStub::class, $this->table);
         $this->table->insert(['a' => $a, 'b' => $b, 'c' => $c]);
         $this->table->update(['c' => $newC->format('Y-m-d H:i:s')], ['a' => $a, 'b' => $b], []);
@@ -352,7 +349,7 @@ class TableTest extends TestCase
     {
         $a = \mt_rand();
         $b = 'foobar';
-        $c = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
+        $c = $this->getRandomDateTimeImmutable();
         $this->assertInstanceOf(TableStub::class, $this->table);
         $this->table->insert(['a' => $a, 'b' => $b, 'c' => $c]);
         $this->table->delete(['a' => $a, 'c' => $c]);
@@ -369,7 +366,7 @@ class TableTest extends TestCase
     {
         $a = \mt_rand();
         $b = 'foobar';
-        $c = new \DateTimeImmutable(\sprintf('@%d', \random_int(1, \time())));
+        $c = $this->getRandomDateTimeImmutable();
         $this->assertInstanceOf(TableStub::class, $this->table);
         $this->table->insert(['a' => $a, 'b' => $b, 'c' => $c]);
         $this->table->delete(['a' => $a, 'c' => $c->format('Y-m-d H:i:s')], []);
@@ -391,5 +388,23 @@ class TableTest extends TestCase
         parent::setUp();
         $this->insertFixtures($this->table, self::getTableStubFixtures());
         $this->insertFixtures($this->coords, self::getCoordinatesFixtures());
+    }
+
+    protected function getRandomDateTimeImmutable(): \DateTimeImmutable
+    {
+        // Year between 1970 and 2100 (valid Unix Timestamps)
+        $year = random_int(1970, 2100);
+        // Month between 1 and 12
+        $month = random_int(1, 12);
+        // Days in month depend on year and month
+        $day = random_int(1, cal_days_in_month(CAL_GREGORIAN, $month, $year));
+        // Hour, minute and second (no microseconds)
+        $hour = random_int(0, 23);
+        $minute = random_int(0, 59);
+        $second = random_int(0, 59);
+
+        // Create DateTimeImmutable from random values
+        $dateString = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, $second);
+        return new \DateTimeImmutable($dateString);
     }
 }
